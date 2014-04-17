@@ -11,6 +11,7 @@
 
 const St = imports.gi.St;
 const Main = imports.ui.main;
+const Meta = imports.gi.Meta
 
 const Tweener = imports.ui.tweener;
 
@@ -29,7 +30,7 @@ function showDirection(dir, prevIconFilename, nextIconFilename)
 	try
 	{
 		var iconFilename = prevIconFilename;
-		if(dir > 0)
+		if(dir == Meta.MotionDirection.RIGHT)
 		{
 			iconFilename = nextIconFilename;
 		}
@@ -113,20 +114,20 @@ function main(metadata)
 	this.hook = function(actor, event)
 	{
 		var direction = event.get_scroll_direction();
-		if(direction==0) this.switch_workspace(-1);
-		if(direction==1) this.switch_workspace(1);
+		if(direction==0) this.switch_workspace(Meta.MotionDirection.LEFT);
+		if(direction==1) this.switch_workspace(Meta.MotionDirection.RIGHT);
 	}
-    this.switch_workspace = function(incremental)
+    this.switch_workspace = function(direction)
     {
 		if(this.metadata.switchAnimationOn){
-			showDirection(incremental, 
+			showDirection(direction, 
 				this.metadata.path+"/"+this.metadata.switchPrevIcon,
 				this.metadata.path+"/"+this.metadata.switchNextIcon);
 		}
-        var index = global.screen.get_active_workspace_index();
-        index += incremental;
-        if(global.screen.get_workspace_by_index(index) != null) {
-            global.screen.get_workspace_by_index(index).activate(global.get_current_time());
+        var active = global.screen.get_active_workspace();
+        var neighbor = active.get_neighbor(direction);
+        if (active != neighbor) {
+            neighbor.activate(global.get_current_time());
         }
     },
 

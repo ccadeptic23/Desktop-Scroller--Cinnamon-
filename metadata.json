@@ -5,9 +5,6 @@
   "uuid": "desktop-scroller@ccadeptic23", 
   "version": 1.1,
   "url": "http://cinnamon-spices.linuxmint.com/extensions",
-  "switchAnimationOn":true,
-  "showActivationAreas": false,
-  "activationAreaWidth": 2,
   "switchPrevIcon": "my-go-prev.svg",
   "switchNextIcon": "my-go-next.svg"
 }

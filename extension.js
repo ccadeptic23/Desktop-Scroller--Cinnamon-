@@ -145,12 +145,13 @@ DesktopScroller.prototype = {
       icon.set_position(x, y);
       Main.uiGroup.add_actor(icon);
 
+      let hideDirection = this.hideDirection;
       Tweener.addTween(
       icon,
        { opacity: 0,
          time: 0.5,
          transition: 'easeOutQuad',
-         onComplete: function() { this.hideDirection(icon) } });
+         onComplete: function() { hideDirection(icon) } });
     }
     catch (e)
     {

@@ -99,12 +99,13 @@ DesktopScroller.prototype = {
  
   switch_workspace: function(direction)
   {
-    if(this.switchAnimationOn){
-      this.showDirection(direction);
-    } 
-    var active = global.screen.get_active_workspace();
-    var neighbor = active.get_neighbor(direction);
+    let active = global.screen.get_active_workspace();
+    let neighbor = active.get_neighbor(direction);
+
     if (active != neighbor) {
+      if(this.switchAnimationOn){
+        this.showDirection(direction);
+      } 
       neighbor.activate(global.get_current_time());
     }
   },

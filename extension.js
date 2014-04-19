@@ -33,7 +33,7 @@ DesktopScroller.prototype = {
     this.prevIconPath = this.metadata.path + "/" + this.metadata.switchPrevIcon;
     this.nextIconPath = this.metadata.path + "/" + this.metadata.switchNextIcon;
     this.settings = new Settings.ExtensionSettings(this, "desktop-scroller@ccadeptic23");
-    this.settings.bindProperty(Settings.BindingDirection.IN, "switchAnimationOn", "switchAnimationOn", this.onSettingsChanged, null);
+    this.settings.bindProperty(Settings.BindingDirection.IN, "showDirectionArrow", "showDirectionArrow", this.onSettingsChanged, null);
     this.settings.bindProperty(Settings.BindingDirection.IN, "activationAreaWidth", "activationAreaWidth", this.onSettingsChanged, null);
     this.settings.bindProperty(Settings.BindingDirection.IN, "showActivationAreas", "showActivationAreas", this.onSettingsChanged, null);
     this.onSettingsChanged();
@@ -103,7 +103,7 @@ DesktopScroller.prototype = {
     let neighbor = active.get_neighbor(direction);
 
     if (active != neighbor) {
-      if(this.switchAnimationOn){
+      if(this.showDirectionArrow){
         this.showDirection(direction);
       } 
       neighbor.activate(global.get_current_time());

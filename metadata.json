@@ -6,7 +6,7 @@
         "2.2", 
         "2.4"
     ], 
-    "url": "http://cinnamon-spices.linuxmint.com/extensions", 
+    "url": "https://github.com/Thx3r/Desktop-Scroller--Cinnamon-", 
     "description": "Switch between desktops by scrolling desktop area. based on desktop-scroller@ccadeptic23", 
     "switchPrevIcon": "my-go-prev.svg", 
     "switchNextIcon": "my-go-next.svg", 

@@ -33,9 +33,17 @@ DesktopScroller.prototype = {
     this.prevIconPath = this.metadata.path + "/" + this.metadata.switchPrevIcon;
     this.nextIconPath = this.metadata.path + "/" + this.metadata.switchNextIcon;
     this.settings = new Settings.ExtensionSettings(this, "desktop-scroller@ccadeptic23");
-    this.settings.bindProperty(Settings.BindingDirection.IN, "showDirectionArrow", "showDirectionArrow", this.onSettingsChanged, null);
-    this.settings.bindProperty(Settings.BindingDirection.IN, "activationAreaWidth", "activationAreaWidth", this.onSettingsChanged, null);
-    this.settings.bindProperty(Settings.BindingDirection.IN, "showActivationAreas", "showActivationAreas", this.onSettingsChanged, null);
+	this.settings.bindProperty(Settings.BindingDirection.IN, "showActivationAreas", "showActivationAreas", function(){});
+	this.settings.bindProperty(Settings.BindingDirection.IN, "switchAnimationOn", "switchAnimationOn", function(){});	
+	this.settings.bindProperty(Settings.BindingDirection.IN, "x", "x", function(){});
+	this.settings.bindProperty(Settings.BindingDirection.IN, "y", "y", function(){});
+	this.settings.bindProperty(Settings.BindingDirection.IN, "height", "height", function(){});
+	this.settings.bindProperty(Settings.BindingDirection.IN, "width", "width", function(){});	
+	// Second Are
+	this.settings.bindProperty(Settings.BindingDirection.IN, "x2", "x2", function(){});
+	this.settings.bindProperty(Settings.BindingDirection.IN, "y2", "y2", function(){});
+	this.settings.bindProperty(Settings.BindingDirection.IN, "height2", "height2", function(){});
+	this.settings.bindProperty(Settings.BindingDirection.IN, "width2", "width2", function(){});		
     this.onSettingsChanged();
   },
   
@@ -43,21 +51,25 @@ DesktopScroller.prototype = {
     if (!this.enabled)
       return;
          
-    var monitor = Main.layoutManager.primaryMonitor;
-    var width = this.activationAreaWidth;
-    var height = monitor.height - 60;
-    var rx = monitor.width - width;
-    var ry = 30;
-    var lx = 0;
-    var ly = 30;
+    var monitor = Main.layoutManager.primaryMonitor;	
+    var width = this.width
+    var height = this.height
+    var rx = this.x
+    var ry = this.y
+    var width2 = this.width2
+    var height2 = this.height2
+    var lx = this.x2
+    var ly = this.y2
+    var enable_second_area = this.enable_second_area
+    
        
     this.ractor.set_position(rx, ry);
     this.ractor.set_width(width);
     this.ractor.set_height(height);
     
     this.lactor.set_position(lx,ly);
-    this.lactor.set_width(width);
-    this.lactor.set_height(height);
+    this.lactor.set_width(width2);
+    this.lactor.set_height(height2);
     
     var opacity = this.showActivationAreas ? 127 : 0;
     this.ractor.opacity = this.lactor.opacity = opacity;
@@ -72,8 +84,10 @@ DesktopScroller.prototype = {
   {
     this.ractor = new St.Button({style_class:'desktopscroller'});
     this.ractor.connect('scroll-event', this.hook.bind(this));
+
     this.lactor = new St.Button({style_class:'desktopscroller'});
     this.lactor.connect('scroll-event', this.hook.bind(this));
+
 
     Main.layoutManager.addChrome(this.ractor, {visibleInFullscreen:true});
     Main.layoutManager.addChrome(this.lactor, {visibleInFullscreen:true});

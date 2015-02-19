@@ -3,6 +3,7 @@ Configuration options on configuration page
 Change whether arrows appear when switching desktops
 Change the width of activation arrows
 Change visibility of activation areas
+* Change positions and height/width of activation areas
 
 
 Configuration options in the metadata.json
@@ -24,6 +25,10 @@ Known issues
 
 Changelog
 =========
+
+Version 2.1 (I guess too)
+-------------------------
+Change positions and height/width of activation areas
 
 Version 2.0 (I guess)
 ------------

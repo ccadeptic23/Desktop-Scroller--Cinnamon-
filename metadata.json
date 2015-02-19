@@ -1,7 +1,7 @@
 {
   "name": "Desktop Scroller",
   "description": "Switch between desktops by scrolling at left and right edges of the screen.", 
-  "cinnamon-version": [ "1.4", "1.6", "2.0"],
+  "cinnamon-version": [ "1.4", "1.6", "2.2"],
   "uuid": "desktop-scroller@ccadeptic23", 
   "version": 2.0,  
    "__versionComment": "I guess",

@@ -14,150 +14,161 @@ const Meta = imports.gi.Meta
 const Settings = imports.ui.settings;
 const St = imports.gi.St;
 const Tweener = imports.ui.tweener;
+const Config = imports.misc.config
 
 let desktopscroller = null;
 
 // Main class for the extension.
-function DesktopScroller(metadata)
+function DesktopScroller(metadata, orientation, panel_height, instanceId)
 {
-  this._init(metadata);
+	this._init(metadata, orientation, panel_height, instanceId);
 }
 
 DesktopScroller.prototype = {
 
-  _init: function (metadata) {
-    this.metadata = metadata;
-    //set defaults for undefined variables in the metadata file
-    if(this.metadata.switchPrevIcon === undefined) {this.metadata.switchPrevIcon = "my-go-prev.svg";}
-    if(this.metadata.switchNextIcon === undefined) {this.metadata.switchNextIcon = "my-go-next.svg";}
-    this.prevIconPath = this.metadata.path + "/" + this.metadata.switchPrevIcon;
-    this.nextIconPath = this.metadata.path + "/" + this.metadata.switchNextIcon;
-    this.settings = new Settings.ExtensionSettings(this, "desktop-scroller@ccadeptic23");
-    this.settings.bindProperty(Settings.BindingDirection.IN, "showDirectionArrow", "showDirectionArrow", this.onSettingsChanged, null);
-    this.settings.bindProperty(Settings.BindingDirection.IN, "activationAreaWidth", "activationAreaWidth", this.onSettingsChanged, null);
-    this.settings.bindProperty(Settings.BindingDirection.IN, "showActivationAreas", "showActivationAreas", this.onSettingsChanged, null);
-    this.onSettingsChanged();
-  },
-  
-  updateSettings: function() {
-    if (!this.enabled)
-      return;
-         
-    var monitor = Main.layoutManager.primaryMonitor;
-    var width = this.activationAreaWidth;
-    var height = monitor.height - 60;
-    var rx = monitor.width - width;
-    var ry = 30;
-    var lx = 0;
-    var ly = 30;
-       
-    this.ractor.set_position(rx, ry);
-    this.ractor.set_width(width);
-    this.ractor.set_height(height);
-    
-    this.lactor.set_position(lx,ly);
-    this.lactor.set_width(width);
-    this.lactor.set_height(height);
-    
-    var opacity = this.showActivationAreas ? 127 : 0;
-    this.ractor.opacity = this.lactor.opacity = opacity;
-  },
+	_init: function(metadata, orientation, panel_height, instanceId)
+	{
+		this.metadata = metadata;
+		this.panel_height = panel_height;
+		this.orientation = orientation;
+		
+		//set defaults for undefined variables in the metadata file
+		if(this.metadata.switchPrevIcon === undefined) {this.metadata.switchPrevIcon = "my-go-prev.svg";}
+		if(this.metadata.switchNextIcon === undefined) {this.metadata.switchNextIcon = "my-go-next.svg";}
+		this.prevIconPath = this.metadata.path + "/" + this.metadata.switchPrevIcon;
+		this.nextIconPath = this.metadata.path + "/" + this.metadata.switchNextIcon;
+		this.settings = new Settings.ExtensionSettings(this, "desktop-scroller@ccadeptic23");
+		this.settings.bindProperty(Settings.BindingDirection.IN, "showDirectionArrow", "showDirectionArrow", this.onSettingsChanged, null);
+		this.settings.bindProperty(Settings.BindingDirection.IN, "activationAreaWidth", "activationAreaWidth", this.onSettingsChanged, null);
+		this.settings.bindProperty(Settings.BindingDirection.IN, "showActivationAreas", "showActivationAreas", this.onSettingsChanged, null);
+		this.onSettingsChanged();
+	},
 
-  onSettingsChanged: function()
-  {
-    this.updateSettings();
-  },
-  
-  enable: function()
-  {
-    this.ractor = new St.Button({style_class:'desktopscroller'});
-    this.ractor.connect('scroll-event', this.hook.bind(this));
-    this.lactor = new St.Button({style_class:'desktopscroller'});
-    this.lactor.connect('scroll-event', this.hook.bind(this));
+	updateSettings: function()
+	{
+		if (!this.enabled)
+			return;
+		
+		var monitor = Main.layoutManager.primaryMonitor;
+		var porthole = Main.layoutManager.getPorthole();
+		var width = this.activationAreaWidth;
+		var height = porthole.height;
+		
+		var rx = porthole.x + porthole.width - width;
+		var ry = porthole.y;
+		var lx = porthole.x;
+		var ly = porthole.y;
+		
+		this.ractor.set_position(rx, ry);
+		this.ractor.set_width(width);
+		this.ractor.set_height(height);
+		
+		this.lactor.set_position(lx,ly);
+		this.lactor.set_width(width);
+		this.lactor.set_height(height);
+		
+		var opacity = this.showActivationAreas ? 127 : 0;
+		this.ractor.opacity = this.lactor.opacity = opacity;
+	},
 
-    Main.layoutManager.addChrome(this.ractor, {visibleInFullscreen:true});
-    Main.layoutManager.addChrome(this.lactor, {visibleInFullscreen:true});
-    
-    this.enabled = true;
-    this.updateSettings()
-  },
+	onSettingsChanged: function()
+	{
+		this.updateSettings();
+	},
+
+	enable: function()
+	{
+		this.ractor = new St.Button({style_class:'desktopscroller'});
+		this.ractor.connect('scroll-event', this.hook.bind(this));
+		this.lactor = new St.Button({style_class:'desktopscroller'});
+		this.lactor.connect('scroll-event', this.hook.bind(this));
+		
+		Main.layoutManager.addChrome(this.ractor, {visibleInFullscreen:true});
+		Main.layoutManager.addChrome(this.lactor, {visibleInFullscreen:true});
+		
+		this.enabled = true;
+		this.updateSettings()
+	},
   
-  disable: function()
-  {
-    Main.layoutManager.removeChrome(this.lactor);
-    Main.layoutManager.removeChrome(this.ractor);
-    this.lactor.destroy();
-    this.ractor.destroy();
-  },
+	disable: function()
+	{
+		Main.layoutManager.removeChrome(this.lactor);
+		Main.layoutManager.removeChrome(this.ractor);
+		this.lactor.destroy();
+		this.ractor.destroy();
+	},
   
-  hook: function(actor, event)
-  {
-    var scrollDirection = event.get_scroll_direction();
-    var direction = scrollDirection == 1 ? Meta.MotionDirection.RIGHT : Meta.MotionDirection.LEFT;
-    this.switch_workspace(direction);
-  },
+	hook: function(actor, event)
+	{
+		var scrollDirection = event.get_scroll_direction();
+		var direction = scrollDirection == 1 ? Meta.MotionDirection.RIGHT : Meta.MotionDirection.LEFT;
+		this.switch_workspace(direction);
+	},
  
-  switch_workspace: function(direction)
-  {
-    let active = global.screen.get_active_workspace();
-    let neighbor = active.get_neighbor(direction);
+	switch_workspace: function(direction)
+	{
+		let active = global.screen.get_active_workspace();
+		let neighbor = active.get_neighbor(direction);
+		
+		if (active != neighbor)
+		{
+			if(this.showDirectionArrow){
+			this.showDirection(direction);
+			} 
+			neighbor.activate(global.get_current_time());
+		}
+	},
 
-    if (active != neighbor) {
-      if(this.showDirectionArrow){
-        this.showDirection(direction);
-      } 
-      neighbor.activate(global.get_current_time());
-    }
-  },
+	show: function()
+	{
+		this.actor.show()
+	},
 
-  show: function()
-  {
-    this.actor.show()
-  },
-  
-  hide: function()
-  {
-    this.actor.hide()
-  },
-  
-  hideDirection: function(icon)
-  {
-    Main.uiGroup.remove_actor(icon);
-  },
+	hide: function()
+	{
+		this.actor.hide()
+	},
 
-  showDirection: function(dir)
-  {
-    try
-    {
-      let iconFilename = dir == Meta.MotionDirection.RIGHT ? this.nextIconPath : this.prevIconPath;
-      let textureCache = St.TextureCache.get_default();
-      let directionicontexture = textureCache.load_uri_async("file://" + iconFilename, -1, -1);
-      
-      let icon = new St.Bin(
-       { style_class: 'direction-icon', 
-         width: 500, 
-         height: 500, 
-         child: directionicontexture });
-         
-      let monitor = Main.layoutManager.primaryMonitor;
-      let x = Math.floor(monitor.width / 2 - icon.width / 2);
-      let y = Math.floor(monitor.height / 2 - icon.height / 2)
-      icon.set_position(x, y);
-      Main.uiGroup.add_actor(icon);
+	hideDirection: function(icon)
+	{
+		Main.uiGroup.remove_actor(icon);
+	},
 
-      let hideDirection = this.hideDirection;
-      Tweener.addTween(
-      icon,
-       { opacity: 0,
-         time: 0.5,
-         transition: 'easeOutQuad',
-         onComplete: function() { hideDirection(icon) } });
-    }
-    catch (e)
-    {
-      global.logError(e);
-    }
-  },
+	showDirection: function(dir)
+	{
+		try
+		{
+			let iconFilename = dir == Meta.MotionDirection.RIGHT ? this.nextIconPath : this.prevIconPath;
+			let textureCache = St.TextureCache.get_default();
+			let directionicontexture = textureCache.load_uri_async("file://" + iconFilename, -1, -1);
+			
+			let icon = new St.Bin(
+				{
+					style_class: 'direction-icon', 
+					width: 500, 
+					height: 500, 
+					child: directionicontexture
+				} );
+			
+			let monitor = Main.layoutManager.primaryMonitor;
+			let x = Math.floor(monitor.width / 2 - icon.width / 2) + monitor.x;
+			let y = Math.floor(monitor.height / 2 - icon.height / 2) + monitor.y;
+			icon.set_position(x, y);
+			Main.uiGroup.add_actor(icon);
+		
+			let hideDirection = this.hideDirection;
+			Tweener.addTween(
+			icon,
+			{ opacity: 0,
+			time: 0.5,
+			transition: 'easeOutQuad',
+			onComplete: function() { hideDirection(icon) } });
+		}
+		catch (e)
+		{
+			global.logError(e);
+		}
+	},
 }
 
 // Gnome-shell extension API.

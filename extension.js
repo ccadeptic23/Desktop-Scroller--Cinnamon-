@@ -40,7 +40,6 @@ DesktopScroller.prototype = {
 	this.settings.bindProperty(Settings.BindingDirection.IN, "height", "height", function(){});
 	this.settings.bindProperty(Settings.BindingDirection.IN, "width", "width", function(){});	
 	// Second Are
-	this.settings.bindProperty(Settings.BindingDirection.IN, "enable_second_area", "enable_second_area", function(){});
 	this.settings.bindProperty(Settings.BindingDirection.IN, "x2", "x2", function(){});
 	this.settings.bindProperty(Settings.BindingDirection.IN, "y2", "y2", function(){});
 	this.settings.bindProperty(Settings.BindingDirection.IN, "height2", "height2", function(){});

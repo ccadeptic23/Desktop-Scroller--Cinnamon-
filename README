@@ -1,8 +1,8 @@
 Installation
 ==========================================
 
-mkdir ~/.local/share/cinnamon/extensions/esktop-scroller2@thxer.com
-cd ~/.local/share/cinnamon/extensions/esktop-scroller2@thxer.com
+mkdir ~/.local/share/cinnamon/extensions/desktop-scroller2@thxer.com
+cd ~/.local/share/cinnamon/extensions/desktop-scroller2@thxer.com
 git clone https://github.com/Thx3r/Desktop-Scroller--Cinnamon-.git
 cinnamon --replace
 cinnamon-settings extensions

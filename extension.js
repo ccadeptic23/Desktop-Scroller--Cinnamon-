@@ -51,13 +51,16 @@ DesktopScroller.prototype = {
 		
 		var monitor = Main.layoutManager.primaryMonitor;
 		var porthole = Main.layoutManager.getPorthole();
+		
+		var yoffset = 20;
 		var width = this.activationAreaWidth;
-		var height = porthole.height;
+		var height = porthole.height-2*yoffset;
+		
 		
 		var rx = porthole.x + porthole.width - width;
-		var ry = porthole.y;
+		var ry = porthole.y+yoffset;
 		var lx = porthole.x;
-		var ly = porthole.y;
+		var ly = porthole.y+yoffset;
 		
 		this.ractor.set_position(rx, ry);
 		this.ractor.set_width(width);

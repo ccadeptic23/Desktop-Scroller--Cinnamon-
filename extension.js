@@ -116,7 +116,7 @@ DesktopScroller.prototype = {
 		if (active != neighbor)
 		{
 			if(this.showDirectionArrow){
-			this.showDirection(direction);
+				this.showDirection(direction);
 			} 
 			neighbor.activate(global.get_current_time());
 		}

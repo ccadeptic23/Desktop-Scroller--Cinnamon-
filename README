@@ -24,11 +24,15 @@ Known issues
 
 Changelog
 =========
+Version 2.02
+------------
+adds fixed padding around activation areas so as to not conflict with the hotcorners feature of cinnamon.
+
 Version 2.01
 ------------
 Added some changes to the placement of the icon and the activation areas for multiple monitors and non standard panel forms
 
-Version 2.0 (I guess)
+Version 2.0
 ------------
 moved some settings from metadata to settings schema
 

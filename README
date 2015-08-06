@@ -24,6 +24,9 @@ Known issues
 
 Changelog
 =========
+Version 2.1
+------------
+Added fix for cinnamon 2.6 removing some api's
 Version 2.02
 ------------
 adds fixed padding around activation areas so as to not conflict with the hotcorners feature of cinnamon.

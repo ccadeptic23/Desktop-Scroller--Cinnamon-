@@ -50,8 +50,8 @@ DesktopScroller.prototype = {
 			return;
 		
 		var monitor = Main.layoutManager.primaryMonitor;
-		var porthole = Main.layoutManager.getPorthole();
-		
+		//var porthole = Main.layoutManager.getPorthole(); //why you taking away myapi's :(
+		var porthole = {x:0, y:0, width:global.screen_width, height:global.screen_height};
 		var yoffset = 20;
 		var width = this.activationAreaWidth;
 		var height = porthole.height-2*yoffset;
@@ -120,23 +120,6 @@ DesktopScroller.prototype = {
 			} 
 			neighbor.activate(global.get_current_time());
 		}
-		//alternate for overscrolling, not sure if i like. 
-		//direction reinforces users sense of space...but useful for more than 2.
-		/*var increment = direction == Meta.MotionDirection.RIGHT ? 1 : -1;
-		var wkindex = global.screen.get_active_workspace_index();
-		var num_wksp = global.screen.n_workspaces;
-		var new_wksp_index = (wkindex + increment+num_wksp) % num_wksp; //strange that % can be negative, so added the num_wksp
-		
-			
-		var new_wksp = global.screen.get_workspace_by_index(new_wksp_index);
-		global.log(new_wksp_index);
-		if( new_wksp != null) {
-			if(this.showDirectionArrow)
-			{
-				this.showDirection(direction);
-			} 
-            new_wksp.activate(global.get_current_time());
-        }*/
 	},
 
 	show: function()
